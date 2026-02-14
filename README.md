@@ -14,7 +14,7 @@
 - Member 2: Fathima Shifa.K -K.A.H.M. Unityu Women's College
 - 
 ### Hosted Project Link
-https://github.com/hibakeyath/Skill-Swap.git
+https://github.com/hibakeyath/Hackathon.git
 
 
 ### Project Description
