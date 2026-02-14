@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Clusters | Pro Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .mentor-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .mentor-card:hover { transform: translateY(-8px); border-color: #6366f1; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .sticky-header { backdrop-filter: blur(12px); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-card { animation: fadeIn 0.5s ease forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans">
+
+    <header class="sticky top-0 z-50 bg-white/90 border-b border-slate-200 sticky-header">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg rotate-12"></div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tighter">MENTOR<span class="text-indigo-600">HUB</span></h1>
+            </div>
+            <nav id="filter-nav" class="flex flex-wrap justify-center gap-2">
+                </nav>
+        </div>
+    </header>
+
+    <main id="app-root" class="max-w-7xl mx-auto px-6 py-12 space-y-20">
+        </main>
+
+    <script>
+        const causes = [
+            {
+                id: "art",
+                title: "Art & Visual Expression",
+                description: "Mastering the aesthetics of digital and traditional media.",
+                color: "border-pink-500",
+                mentors: [
+                    { name: "Lydia Bloom", role: "Concept Artist", bio: "Visualizing worlds for AAA gaming studios.", tags: ["Illustration", "Cinema4D"] },
+                    { name: "Victor Muse", role: "Fine Art Mentor", bio: "Bridging classical oil painting with digital tools.", tags: ["Oil", "Photoshop"] }
+                ]
+            },
+            {
+                id: "tech",
+                title: "Technical & System Architecture",
+                description: "Building the backbone of modern web and mobile ecosystems.",
+                color: "border-cyan-500",
+                mentors: [
+                    { name: "Ray Cipher", role: "DevOps Architect", bio: "Scaling infrastructure for high-traffic startups.", tags: ["Kubernetes", "Rust"] },
+                    { name: "Amina Tech", role: "Systems Engineer", bio: "Low-level optimization and database design.", tags: ["C++", "Distributed Systems"] }
+                ]
+            },
+            {
+                id: "ai",
+                title: "Ethical AI & Automation",
+                description: "Guiding ML with a focus on bias, safety, and ethics.",
+                color: "border-purple-600",
+                mentors: [
+                    { name: "Dr. Kenji Sato", role: "AI Ethics Lead", bio: "Specializes in reducing algorithmic bias.", tags: ["Python", "Policy"] },
+                    { name: "Elena Vance", role: "ML Engineer", bio: "Expert in LLMs and NLP applications.", tags: ["PyTorch", "Data"] }
+                ]
+            },
+            {
+                id: "fin",
+                title: "Financial Literacy",
+                description: "Economics of startups and wealth building.",
+                color: "border-amber-500",
+                mentors: [
+                    { name: "David Chen", role: "Venture Capitalist", bio: "Investment strategies for seed-stage startups.", tags: ["Finance", "Pitching"] }
+                ]
+            }
+        ];
+
+        const root = document.getElementById('app-root');
+        const nav = document.getElementById('filter-nav');
+
+        function createFilters() {
+            const allBtn = document.createElement('button');
+            allBtn.textContent = "All Courses";
+            allBtn.className = "px-4 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-medium";
+            allBtn.onclick = () => render('all');
+            nav.appendChild(allBtn);
+
+            causes.forEach(c => {
+                const btn = document.createElement('button');
+                btn.textContent = c.title.split(' ')[0];
+                btn.className = "px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition-all";
+                btn.onclick = () => render(c.id);
+                nav.appendChild(btn);
+            });
+        }
+
+        function render(filterId = 'all') {
+            const filteredData = filterId === 'all' ? causes : causes.filter(c => c.id === filterId);
+            
+            root.innerHTML = filteredData.map((cause, cIndex) => `
+                <section class="animate-card" style="animation-delay: ${cIndex * 0.1}s">
+                    <div class="mb-8 border-l-8 ${cause.color} pl-6">
+                        <h2 class="text-3xl font-bold text-slate-800">${cause.title}</h2>
+                        <p class="text-slate-500 mt-1">${cause.description}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${cause.mentors.map(mentor => `
+                            <div class="mentor-card bg-white border border-slate-200 p-8 rounded-3xl shadow-sm overflow-hidden relative">
+                                <div class="flex items-center gap-4 mb-6">
+                                    <div class="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                                        ${mentor.name[0]}
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-xl">${mentor.name}</h3>
+                                        <p class="text-indigo-600 text-sm font-bold uppercase tracking-widest">${mentor.role}</p>
+                                    </div>
+                                </div>
+                                <p class="text-slate-600 mb-6 text-sm leading-relaxed">${mentor.bio}</p>
+                                <div class="flex flex-wrap gap-2 mb-8">
+                                    ${mentor.tags.map(tag => `
+                                        <span class="text-[10px] font-black px-2.5 py-1 bg-slate-100 text-slate-500 rounded uppercase border border-slate-200">
+                                            ${tag}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                                <button class="group w-full py-3 bg-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all">
+                                    Book Session
+                                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `).join('');
+        }
+
+        createFilters();
+        render();
+    </script>
+</body>
+</html>

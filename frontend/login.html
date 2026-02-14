@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap Pro | Unified Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C4DFF;
+            --gradient: linear-gradient(135deg, #7C4DFF, #2575fc);
+            --bg: #F8F9FD;
+            --white: #ffffff;
+            --text-main: #2D3436;
+            --text-sub: #8E8E93;
+            --shadow: 0 15px 35px rgba(124, 77, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+
+        .app-shell { width: 100%; max-width: 480px; position: relative; min-height: 100vh; }
+
+        /* View Management */
+        .view { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Auth Component (Login & Sign Up on same page) */
+        .auth-container { margin-top: 60px; background: var(--white); padding: 40px 30px; border-radius: 30px; box-shadow: var(--shadow); text-align: center; }
+        .auth-header h2 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
+        .auth-header p { color: var(--text-sub); font-size: 14px; margin-bottom: 30px; }
+
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #eee; border-radius: 15px; outline: none; background: #fdfdfd; transition: 0.3s; }
+        input:focus { border-color: var(--primary); background: #fff; }
+
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .toggle-text { margin-top: 25px; font-size: 14px; color: var(--text-sub); }
+        .toggle-text span { color: var(--primary); font-weight: 700; cursor: pointer; }
+
+        /* Dashboard Components */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .user-chip { display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px 5px 5px; border-radius: 50px; box-shadow: var(--shadow); }
+        .avatar { width: 35px; height: 35px; background: var(--gradient); border-radius: 50%; }
+
+        .skill-card { background: white; padding: 20px; border-radius: 25px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow); border: 1px solid transparent; transition: 0.3s; }
+        .skill-card:hover { border-color: var(--primary); }
+        .icon-box { width: 50px; height: 50px; background: #F0E7FF; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+        /* Footer Nav */
+        #nav-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #1A1A1A; padding: 15px; border-radius: 40px; display: none; justify-content: space-around; z-index: 100; }
+        .nav-item { color: #666; font-size: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .nav-item.active { color: white; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    
+    <section id="view-auth" class="view active">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-subtitle">Log in to start swapping skills today.</p>
+            </div>
+
+            <input type="text" id="reg-name" class="hidden" placeholder="Full Name">
+            
+            <input type="email" id="auth-email" placeholder="Email Address">
+            <input type="password" id="auth-pass" placeholder="Password">
+            
+            <button class="btn btn-primary" id="auth-btn" onclick="handleAuth()">Login</button>
+            
+            
+        
+            <p class="toggle-text" id="toggle-wrapper">
+                    New to SkillSwap? <span onclick="toggleAuthMode('signup')">Create Account</span>
+             </p>
+            
+        </div>
+    </section>
+
+    <section id="view-discover" class="view">
+        <div class="header">
+            <div>
+                <h2 style="font-size: 22px;">Discover</h2>
+                <p style="font-size: 13px; color: var(--text-sub);">Learn something new today</p>
+            </div>
+            <div class="user-chip">
+                <div class="avatar"></div>
+                <span id="user-display" style="font-size: 13px; font-weight: 600;">Alex</span>
+            </div>
+        </div>
+        
+        <div class="skill-card">
+            <div class="icon-box">🎨</div>
+            <div><strong>UI/UX Design</strong><p style="font-size: 12px; color:var(--text-sub)">15 Mentors</p></div>
+        </div>
+        <div class="skill-card">
+            <div class="icon-box">🐍</div>
+            <div><strong>Python</strong><p style="font-size: 12px; color:var(--text-sub)">9 Mentors</p></div>
+        </div>
+    </section>
+
+    <section id="view-dashboard" class="view">
+        <h2 style="margin-bottom: 20px;">Your Progress</h2>
+        <div style="background: var(--gradient); padding: 30px; border-radius: 30px; color: white; margin-bottom: 25px;">
+            <p style="opacity: 0.8; font-size: 14px;">Total Swaps</p>
+            <h1 style="font-size: 32px;">12</h1>
+        </div>
+        <h3>Recent Activity</h3>
+        <div class="skill-card">
+            <div class="icon-box">🎸</div>
+            <div><strong>Guitar Basics</strong><p style="font-size: 12px; color:var(--text-sub)">In progress...</p></div>
+        </div>
+    </section>
+
+    <nav id="nav-bar">
+        <div class="nav-item active" onclick="changeTab('view-discover', this)">Discover</div>
+        <div class="nav-item" onclick="changeTab('view-dashboard', this)">Dashboard</div>
+        <div class="nav-item" onclick="logout()">Logout</div>
+    </nav>
+</div>
+
+<script>
+    let isLoginMode = true;
+
+    // 1. Toggle between Login and Sign Up within the same card
+    function toggleAuthMode(mode) {
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const btn = document.getElementById('auth-btn');
+        const toggleWrapper = document.getElementById('toggle-wrapper');
+        const nameField = document.getElementById('reg-name');
+
+        if (mode === 'signup') {
+            isLoginMode = false;
+            title.innerText = "Join SkillSwap";
+            subtitle.innerText = "Share your expertise and grow.";
+            btn.innerText = "Sign Up";
+            nameField.classList.remove('hidden');
+            toggleWrapper.innerHTML = `Already a member? <span onclick="toggleAuthMode('login')">Login</span>`;
+        } else {
+            isLoginMode = true;
+            title.innerText = "Welcome Back";
+            subtitle.innerText = "Log in to start swapping skills today.";
+            btn.innerText = "Login";
+            nameField.classList.add('hidden');
+            toggleWrapper.innerHTML = `New to SkillSwap? <span onclick="toggleAuthMode('signup')">Create Account</span>`;
+        }
+    }
+
+    // 2. Authentication Logic
+    function handleAuth() {
+        const email = document.getElementById('auth-email').value;
+        const name = document.getElementById('reg-name').value;
+
+        if(!email) { alert("Please enter your email"); return; }
+
+        // Mock login/signup success
+        localStorage.setItem('userEmail', email);
+        if(!isLoginMode) localStorage.setItem('userName', name);
+        
+        const displayName = localStorage.getItem('userName') || email.split('@')[0];
+        document.getElementById('user-display').innerText = displayName;
+
+        // Enter App
+        document.getElementById('view-auth').classList.remove('active');
+        document.getElementById('view-discover').classList.add('active');
+        document.getElementById('nav-bar').style.display = 'flex';
+    }
+
+    // 3. Navigation Tab Logic
+    function changeTab(viewId, el) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // 4. Logout Logic
+    function logout() {
+        localStorage.clear();
+        document.getElementById('nav-bar').style.display = 'none';
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-auth').classList.add('active');
+        toggleAuthMode('login');
+    }
+</script>
+
+</body>
+</html>

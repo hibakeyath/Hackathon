@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Skills | SkillSwap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C4DFF;
+            --bg: #F8F9FD;
+            --card-bg: #ffffff;
+            --text-main: #2D3436;
+            --text-sub: #8E8E93;
+            --shadow: 0 10px 25px rgba(0,0,0,0.03);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); padding: 20px; max-width: 480px; margin: 0 auto; overflow-x: hidden; }
+
+        /* Header & Search */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; }
+        h1 { font-size: 1.6rem; color: var(--text-main); }
+        .header p { color: var(--text-sub); font-size: 0.9rem; }
+        .search-area { margin-bottom: 30px; position: relative; }
+        .search-bar { width: 100%; padding: 15px 20px; border-radius: 20px; border: 1px solid #eee; background: var(--card-bg); outline: none; font-size: 0.9rem; box-shadow: var(--shadow); transition: var(--transition); }
+        .search-bar:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.1); }
+
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 25px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 10px; transition: var(--transition); animation: fadeIn 0.5s ease-out forwards; }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .icon-box { width: 45px; height: 45px; border-radius: 15px; background: #F0E7FF; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .card h3 { font-size: 0.95rem; color: var(--text-main); font-weight: 700; }
+        .card p { font-size: 0.75rem; color: var(--text-sub); line-height: 1.4; flex-grow: 1; }
+        .mentor-badge { font-size: 0.65rem; font-weight: 700; color: var(--primary); background: #F0E7FF; padding: 4px 10px; border-radius: 20px; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .swap-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem; cursor: pointer; width: 100%; transition: 0.2s; }
+        .swap-btn:active { transform: scale(0.95); opacity: 0.9; }
+
+        /* Bottom Drawer Modal */
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; opacity: 0; transition: opacity 0.3s; }
+        .drawer { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-radius: 30px 30px 0 0; padding: 30px 20px; z-index: 1001; transition: bottom 0.4s cubic-bezier(0.17, 0.84, 0.44, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        .drawer.active { bottom: 0; }
+        .drawer-handle { width: 40px; height: 4px; background: #eee; border-radius: 2px; margin: -15px auto 20px; }
+
+        .no-results { grid-column: span 2; text-align: center; padding: 40px; color: var(--text-sub); display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>Discover Skills</h1>
+            <p>Ready to swap today?</p>
+        </div>
+        <div style="font-size: 1.5rem; cursor: pointer; position: relative;">
+            🔔 <span style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: #FF4D4D; border-radius: 50%; border: 2px solid var(--bg);"></span>
+        </div>
+    </div>
+
+    <div class="search-area">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Try 'Coding' or 'Design'..." onkeyup="filterGrid(this.value)">
+    </div>
+
+    <div class="grid" id="skillGrid">
+        <div class="card" data-title="UI Design">
+            <div class="icon-box">🎨</div>
+            <h3>UI Design</h3>
+            <p>Master Figma and prototyping.</p>
+            <span class="mentor-badge">12 Mentors</span>
+            <button class="swap-btn" onclick="openSwap('UI Design')">Swap</button>
+        </div>
+
+        <div class="card" data-title="Python Basics">
+            <div class="icon-box">🐍</div>
+            <h3>Python</h3>
+            <p>Automation and data scripts.</p>
+            <span class="mentor-badge">8 Mentors</span>
+            <button class="swap-btn" onclick="openSwap('Python')">Swap</button>
+        </div>
+
+        <div class="card" data-title="Photography">
+            <div class="icon-box">📸</div>
+            <h3>Photography</h3>
+            <p>Lighting and mobile editing.</p>
+            <span class="mentor-badge">5 Mentors</span>
+            <button class="swap-btn" onclick="openSwap('Photography')">Swap</button>
+        </div>
+
+        <div class="card" data-title="Public Speaking">
+            <div class="icon-box">🎤</div>
+            <h3>Public Speaking</h3>
+            <p>Confidence and clarity.</p>
+            <span class="mentor-badge">15 Mentors</span>
+            <button class="swap-btn" onclick="openSwap('Public Speaking')">Swap</button>
+        </div>
+
+        <div id="noResults" class="no-results">No skills found matching your search.</div>
+    </div>
+
+    <div class="drawer-overlay" id="overlay" onclick="closeSwap()"></div>
+    <div class="drawer" id="swapDrawer">
+        <div class="drawer-handle"></div>
+        <h2 style="font-size: 1.3rem; margin-bottom: 10px;">Swap for <span id="targetSkill" style="color: var(--primary);">Skill</span></h2>
+        <p style="color: var(--text-sub); font-size: 0.9rem; margin-bottom: 25px;">What skill will you offer in return?</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button class="swap-btn" style="background: #F1F1FF; color: var(--primary); text-align: left;" onclick="confirmSwap('Figma')">I'll teach <b>Figma</b></button>
+            <button class="swap-btn" style="background: #F1F1FF; color: var(--primary); text-align: left;" onclick="confirmSwap('Cooking')">I'll teach <b>Cooking</b></button>
+            <button class="swap-btn" onclick="closeSwap()" style="background: #eee; color: #666; margin-top: 10px;">Maybe Later</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Improved Filter Logic
+        function filterGrid(query) {
+            const cards = document.querySelectorAll('.card');
+            const lowerQuery = query.toLowerCase();
+            let hasVisible = false;
+            
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                if (title.includes(lowerQuery)) {
+                    card.style.display = "flex";
+                    hasVisible = true;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            document.getElementById('noResults').style.display = hasVisible ? "none" : "block";
+        }
+
+        // 2. Drawer Navigation
+        function openSwap(skill) {
+            document.getElementById('targetSkill').innerText = skill;
+            const overlay = document.getElementById('overlay');
+            const drawer = document.getElementById('swapDrawer');
+            
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                drawer.classList.add('active');
+            }, 10);
+        }
+
+        function closeSwap() {
+            const overlay = document.getElementById('overlay');
+            const drawer = document.getElementById('swapDrawer');
+            
+            drawer.classList.remove('active');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 400);
+        }
+
+        function confirmSwap(offeredSkill) {
+            const target = document.getElementById('targetSkill').innerText;
+            alert(`Request Sent! You're swapping ${offeredSkill} for ${target}.`);
+            closeSwap();
+        }
+    </script>
+
+</body>
+</html>

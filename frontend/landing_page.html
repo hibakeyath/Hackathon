@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap | Swap Skills, Not Money</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C4DFF;
+            --gradient: linear-gradient(135deg, #7C4DFF, #2575fc);
+            --bg: #F8F9FD;
+            --text-dark: #2D3436;
+            --text-gray: #8E8E93;
+            --white: #ffffff;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* Responsive cap */
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            position: relative;
+        }
+
+        /* CLEAN NAVBAR */
+        .navbar {
+            background: var(--white);
+            padding: clamp(12px, 3vw, 18px) 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            position: sticky;
+            top: 10px;
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 700; font-size: 20px; color: var(--primary); letter-spacing: -0.5px; }
+        .profile { width: 38px; height: 38px; border-radius: 50%; background: #eee; border: 2px solid var(--white); outline: 2px solid var(--primary); cursor: pointer; }
+
+        /* DYNAMIC HERO */
+        .hero {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 40px 25px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(124, 77, 255, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .hero h1 { font-size: clamp(24px, 8vw, 32px); margin-bottom: 8px; line-height: 1.2; }
+        .hero p { opacity: 0.9; font-size: 14px; margin-bottom: 25px; }
+
+        .search-box {
+            background: var(--white);
+            border-radius: 50px;
+            padding: 6px 6px 6px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-box input { border: none; outline: none; width: 100%; font-size: 14px; color: var(--text-dark); }
+        .search-btn { 
+            background: var(--primary); border: none; color: var(--white); 
+            width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+
+        /* GRID CARDS */
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .action-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 24px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid transparent;
+            transition: 0.2s ease;
+        }
+        .action-card:active { transform: scale(0.95); border-color: var(--primary); }
+        .action-card.featured { background: var(--gradient); color: white; }
+
+        /* TAGS */
+        .tags-container { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px; scrollbar-width: none; }
+        .tags-container::-webkit-scrollbar { display: none; }
+        .tag {
+            white-space: nowrap; background: white; padding: 10px 18px;
+            border-radius: 50px; font-size: 13px; font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02); cursor: pointer;
+            transition: 0.2s; border: 1px solid #eee;
+        }
+        .tag.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* MENTORS LIST */
+        .mentor-card {
+            background: var(--white); padding: 16px; border-radius: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; animation: slideUp 0.4s ease forwards;
+            opacity: 0; border: 1px solid #f8f8f8;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .avatar-placeholder { width: 48px; height: 48px; border-radius: 14px; background: #f0f0f0; }
+        .rating-badge { background: #FFF9E6; color: #FFA000; padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+
+        /* NAV FOOTER */
+        .footer-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #1A1A1A; padding: 12px 30px; border-radius: 40px;
+            display: flex; gap: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            width: 90%; max-width: 380px; justify-content: space-around;
+        }
+        .nav-link { color: #666; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .nav-link.active { color: white; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="navbar">
+        <div class="logo">SkillSwap</div>
+        <div class="nav-icons">
+            <span style="font-size: 20px; cursor:pointer">🔔</span>
+            <div class="profile"></div>
+        </div>
+    </div>
+
+    <div class="hero" id="heroSection">
+        <h1>Swap Skills,<br>Not Money</h1>
+        <p>Master new talents through community exchange.</p>
+        <div class="search-box">
+            <input type="text" id="skillSearch" placeholder="Try 'Guitar' or 'Python'...">
+            <button class="search-btn" onclick="handleSearch()"><span>→</span></button>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+        <div class="action-card" onclick="vibrate()">Find a<br>Mentor</div>
+        <div class="action-card featured" onclick="vibrate()">Become a<br>Mentor</div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="font-size: 16px;">Trending Skills</h3>
+            <span style="color:var(--primary); font-size:12px; font-weight:700; cursor:pointer;">See All</span>
+        </div>
+        <div class="tags-container" id="tagList">
+            <div class="tag active" onclick="filterBy('All', this)">All</div>
+            <div class="tag" onclick="filterBy('Design', this)">Design</div>
+            <div class="tag" onclick="filterBy('Code', this)">Code</div>
+            <div class="tag" onclick="filterBy('Language', this)">Language</div>
+            <div class="tag" onclick="filterBy('Music', this)">Music</div>
+        </div>
+    </div>
+
+    <div id="mentorContainer" style="margin-top: 10px;">
+        </div>
+
+    <nav class="footer-nav">
+        <a class="nav-link active">Home</a>
+        <a class="nav-link">Explore</a>
+        <a class="nav-link">Chats</a>
+        <a class="nav-link">Profile</a>
+    </nav>
+</div>
+
+<script>
+    const mentors = [
+        { name: "Alex Chen", skill: "UI/UX Specialist", cat: "Design", rate: "4.9", color: "#E3F2FD" },
+        { name: "Sarah Jenkins", skill: "Web Developer", cat: "Code", rate: "5.0", color: "#F3E5F5" },
+        { name: "Miguel Diaz", skill: "Spanish Tutor", cat: "Language", rate: "4.8", color: "#FFF3E0" }
+    ];
+
+    function renderMentors(filter = "All") {
+        const container = document.getElementById('mentorContainer');
+        container.innerHTML = ""; // Clear existing
+        
+        const filtered = filter === "All" ? mentors : mentors.filter(m => m.cat === filter);
+
+        filtered.forEach((m, index) => {
+            const card = document.createElement('div');
+            card.className = "mentor-card";
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="avatar-placeholder" style="background: ${m.color}"></div>
+                    <div>
+                        <strong style="font-size: 14px; display: block;">${m.name}</strong>
+                        <span style="font-size: 12px; color: var(--text-gray);">${m.skill}</span>
+                    </div>
+                </div>
+                <div class="rating-badge">★ ${m.rate}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function filterBy(category, el) {
+        // Update tags UI
+        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        
+        // Filter list
+        renderMentors(category);
+    }
+
+    function handleSearch() {
+        const query = document.getElementById('skillSearch').value.toLowerCase();
+        if(!query) return;
+        
+        // Simple search logic
+        const results = mentors.filter(m => m.skill.toLowerCase().includes(query));
+        if(results.length > 0) {
+            alert(`Found ${results.length} mentors!`);
+        } else {
+            alert("No mentors found for that skill yet.");
+        }
+    }
+
+    function vibrate() {
+        if (window.navigator.vibrate) window.navigator.vibrate(10);
+    }
+
+    // Initial Render
+    window.onload = () => renderMentors();
+</script>
+
+</body>
+</html>

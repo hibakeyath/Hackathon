@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap | Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C4DFF;
+            --success: #00C853;
+            --danger: #FF5252;
+            --bg: #F9FAFB;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --white: #ffffff;
+            --border: #E5E7EB;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--white);
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* Sticky Header */
+        header {
+            padding: 32px 24px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+        .subtitle { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
+
+        .search-wrapper {
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #F3F4F6;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-bar:focus {
+            background: var(--white);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.4;
+        }
+
+        /* Content Area */
+        #card-list {
+            padding: 0 20px 100px;
+            flex-grow: 1;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; background: #eee; }
+        
+        .name { font-size: 1rem; font-weight: 600; }
+        .skill-tag { 
+            font-size: 0.7rem; 
+            font-weight: 700; 
+            color: var(--primary); 
+            background: #F3E8FF;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .status-pill {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #F3F4F6;
+        }
+
+        /* Action Buttons */
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        
+        .btn {
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-secondary { background: #F3F4F6; color: var(--text-main); }
+        .btn-secondary:hover { background: #E5E7EB; }
+
+        .btn-approve { background: var(--success); color: white; grid-column: span 1; }
+        .btn-reject { background: #FEE2E2; color: var(--danger); }
+        .btn-approve:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+        .empty-state img { width: 120px; opacity: 0.5; margin-bottom: 16px; }
+
+        /* Footer Nav */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0; width: 100%;
+            padding: 20px;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+        }
+        .nav-link { font-size: 0.7rem; font-weight: 700; color: #9CA3AF; cursor: pointer; text-decoration: none; }
+        .nav-link.active { color: var(--primary); }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1>Approvals</h1>
+        <p class="subtitle" id="stats">3 applicants waiting for review</p>
+        
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search by name or skill...">
+        </div>
+    </header>
+
+    <div id="card-list">
+        <div class="card" data-name="Sarah Miller" data-skill="UI Design">
+            <div class="card-header">
+                <div class="user-info">
+                    <img src="https://i.pravatar.cc/150?u=sarah" class="avatar" alt="Avatar">
+                    <div>
+                        <div class="name">Sarah Miller</div>
+                        <span class="skill-tag">UI/UX Design</span>
+                    </div>
+                </div>
+                <div class="status-pill">Pending</div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="viewProfile('Sarah')">View Portfolio</button>
+                <button class="btn btn-secondary">Quiz Results</button>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-reject" onclick="handleAction(this, 'reject')">Reject</button>
+                <button class="btn btn-approve" onclick="handleAction(this, 'approve')">Approve Mentor</button>
+            </div>
+        </div>
+
+        <div class="card" data-name="Marcus Chen" data-skill="Python">
+            <div class="card-header">
+                <div class="user-info">
+                    <img src="https://i.pravatar.cc/150?u=marcus" class="avatar" alt="Avatar">
+                    <div>
+                        <div class="name">Marcus Chen</div>
+                        <span class="skill-tag">Python Dev</span>
+                    </div>
+                </div>
+                <div class="status-pill">New</div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary">Resume.pdf</button>
+                <button class="btn btn-secondary">Verify ID</button>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-reject" onclick="handleAction(this, 'reject')">Reject</button>
+                <button class="btn btn-approve" onclick="handleAction(this, 'approve')">Approve Mentor</button>
+            </div>
+        </div>
+
+        <div class="card" data-name="Elena Rodriguez" data-skill="Marketing">
+            <div class="card-header">
+                <div class="user-info">
+                    <img src="https://i.pravatar.cc/150?u=elena" class="avatar" alt="Avatar">
+                    <div>
+                        <div class="name">Elena Rodriguez</div>
+                        <span class="skill-tag">Marketing</span>
+                    </div>
+                </div>
+                <div class="status-pill" style="color: var(--success)">Interview Passed</div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" style="grid-column: span 2;">Review Interview Notes</button>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-reject" onclick="handleAction(this, 'reject')">Reject</button>
+                <button class="btn btn-approve" onclick="handleAction(this, 'approve')">Approve Mentor</button>
+            </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+            <p style="font-weight: 600;">🎉 All caught up!</p>
+            <p class="subtitle">No more pending applications to review.</p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <span class="nav-link">HOME</span>
+        <span class="nav-link active">APPROVALS</span>
+        <span class="nav-link">MENTORS</span>
+        <span class="nav-link">LOGS</span>
+    </div>
+</div>
+
+<script>
+    // 1. Handle Approve/Reject with feedback
+    function handleAction(btn, type) {
+        const card = btn.closest('.card');
+        
+        // Add loading state
+        btn.innerHTML = "Processing...";
+        btn.style.opacity = "0.7";
+        btn.disabled = true;
+
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(20px)';
+            
+            setTimeout(() => {
+                card.remove();
+                updateStats();
+            }, 300);
+        }, 600);
+    }
+
+    // 2. Dynamic Update Stats
+    function updateStats() {
+        const remaining = document.querySelectorAll('.card').length;
+        const statsText = document.getElementById('stats');
+        const emptyState = document.getElementById('empty-state');
+
+        if (remaining === 0) {
+            statsText.innerText = "No pending applications";
+            emptyState.style.display = "block";
+        } else {
+            statsText.innerText = `${remaining} applicant${remaining > 1 ? 's' : ''} waiting for review`;
+        }
+    }
+
+    // 3. Real-time Search Filter
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name').toLowerCase();
+            const skill = card.getAttribute('data-skill').toLowerCase();
+            
+            if (name.includes(term) || skill.includes(term)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+
+    // 4. Simple View Portfolio mock
+    function viewProfile(name) {
+        alert(`Opening ${name}'s external portfolio...`);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Details - Advanced UI Design</title>
+    <style>
+        /* ADDING TO YOUR CSS */
+        :root {
+            --primary: #7C4DFF;
+            --bg: #F8F9FD;
+            --text-main: #1A1A1A;
+            --text-sub: #8E8E93;
+            --success: #2ECC71;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding-bottom: 120px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .hero {
+            position: relative;
+            height: 200px;
+            margin: 15px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #7C4DFF, #FFD1FF); /* Updated gradient */
+            overflow: hidden;
+        }
+
+        .hero-badges {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .badge-design { background: var(--primary); }
+        .badge-level { background: rgba(255,255,255,0.3); backdrop-filter: blur(5px); }
+
+        .content { padding: 0 20px; }
+        h1 { font-size: 1.8rem; margin: 20px 0 10px 0; line-height: 1.2; }
+        .stats { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 25px; }
+        .star { color: #FFD700; margin-right: 5px; }
+
+        .instructor-card {
+            background: white;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #F2F2F7;
+            margin-bottom: 30px;
+        }
+
+        .profile-header { display: flex; align-items: center; margin-bottom: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; background: #000; margin-right: 12px; overflow: hidden;}
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .instructor-card h3 { margin: 0; font-size: 1.1rem; }
+        .instructor-card p.role { color: var(--primary); margin: 2px 0; font-size: 0.85rem; font-weight: 600; }
+        .bio { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; }
+
+        .btn-row { display: flex; gap: 10px; }
+        .btn-outline {
+            flex: 1;
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid #E5E5EA;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-outline.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .curriculum-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .curriculum-item:active { transform: scale(0.98); }
+
+        .curriculum-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 45px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: #E5E5EA;
+        }
+
+        .icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #F2F2F7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 1;
+        }
+
+        .icon-completed { background: #F0E7FF; color: var(--primary); }
+
+        .phase-info h4 { margin: 0 0 5px 0; font-size: 1rem; }
+        .phase-info p { margin: 0; font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; }
+        .phase-meta { margin-top: 8px; font-size: 0.75rem; display: flex; gap: 15px; }
+        .status-done { color: var(--success); font-weight: bold; }
+        .status-next { color: var(--primary); font-weight: bold; }
+
+        .wishlist {
+            background: #F9F5FF;
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .wishlist h4 { color: var(--primary); margin: 0 0 10px 0; }
+        .chip-group { display: flex; gap: 10px; margin-top: 15px; }
+        .chip { background: white; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; }
+        .chip:hover { border-color: var(--primary); }
+
+        .footer {
+            position: fixed; bottom: 0; width: 100%; max-width: 420px;
+            background: white; padding: 20px; box-sizing: border-box;
+            border-top: 1px solid #F2F2F7; text-align: center; z-index: 100;
+        }
+
+        .btn-main {
+            background: var(--primary); color: white; width: 80%; padding: 16px;
+            border-radius: 20px; border: none; font-weight: bold; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(124, 77, 255, 0.2);
+            transition: transform 0.2s;
+        }
+        .btn-main:active { transform: scale(0.95); }
+
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center;
+            align-items: flex-end; z-index: 1000;
+        }
+        .modal {
+            background: white; width: 100%; max-width: 420px;
+            padding: 30px 20px; border-radius: 30px 30px 0 0;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="hero">
+        <div class="hero-badges">
+            <span class="badge badge-design">Design</span>
+            <span class="badge badge-level">Intermediate</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>Advanced UI Design & Systems</h1>
+        <div class="stats">
+            <span class="star">★</span> 4.9 (128 reviews) • 24 Lessons
+        </div>
+
+        <div class="instructor-card">
+            <div class="profile-header">
+                <div class="avatar">
+                    <img src="https://i.pravatar.cc/100?u=alex" alt="Alex">
+                </div>
+                <div>
+                    <h3>Alex Rivera</h3>
+                    <p class="role">Senior Product Designer</p>
+                </div>
+            </div>
+            <p class="bio">Passionate about teaching the intersection of aesthetics and functionality. Over 10 years experience building scalable design systems.</p>
+            <div class="btn-row">
+                <button class="btn-outline" onclick="handleContact()">✉ Message</button>
+                <button class="btn-outline" id="followBtn" onclick="toggleFollow()">👤 Follow</button>
+            </div>
+        </div>
+
+        <h3>Curriculum</h3>
+        
+        <div class="curriculum-item" onclick="showPhase(1)">
+            <div class="icon-circle icon-completed">✓</div>
+            <div class="phase-info">
+                <h4>Phase 1: Design Systems Foundation</h4>
+                <p>Learn the fundamentals of atom-level components and tokenization strategies.</p>
+                <div class="phase-meta">
+                    <span>🕒 45 mins</span>
+                    <span class="status-done">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="curriculum-item" onclick="showPhase(2)">
+            <div class="icon-circle" style="color: var(--primary);">🎨</div>
+            <div class="phase-info">
+                <h4>Phase 2: Color Theory & Accessibility</h4>
+                <p>Master WCAG contrast ratios and creating cohesive semantic color palettes.</p>
+                <div class="phase-meta">
+                    <span>🕒 60 mins</span>
+                    <span class="status-next">Next up</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="wishlist">
+            <h4>⇄ Alex's Wishlist</h4>
+            <p style="font-size: 0.85rem; color: #666; margin: 0;">Alex is looking to trade Design sessions for expertise in:</p>
+            <div class="chip-group">
+                <span class="chip" onclick="selectSwap('SwiftUI')">SwiftUI Basics</span>
+                <span class="chip" onclick="selectSwap('Go')">Go Backend</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="btn-main" onclick="openBooking()">Schedule Session</button>
+        <a href="javascript:void(0)" class="btn-text" onclick="proposeSwap()">PROPOSE SKILL SWAP</a>
+    </div>
+</div>
+
+<div class="modal-overlay" id="bookingModal" onclick="closeBooking(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h2 style="margin-bottom: 10px;">Pick a Date</h2>
+        <p style="color: #666; margin-bottom: 20px;">Available slots for Alex Rivera</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <button class="btn-outline">Mon, 14 Feb • 10:00</button>
+            <button class="btn-outline">Mon, 14 Feb • 14:00</button>
+            <button class="btn-outline">Tue, 15 Feb • 09:00</button>
+            <button class="btn-outline">Wed, 16 Feb • 16:00</button>
+        </div>
+        <button class="btn-main" style="width: 100%;" onclick="confirmBooking()">Confirm Appointment</button>
+    </div>
+</div>
+
+<script>
+    // 1. Follow Button Toggle
+    function toggleFollow() {
+        const btn = document.getElementById('followBtn');
+        const isFollowing = btn.classList.toggle('active');
+        btn.innerText = isFollowing ? '✓ Following' : '👤 Follow';
+    }
+
+    // 2. Booking Modal Logic
+    const modal = document.getElementById('bookingModal');
+    
+    function openBooking() {
+        modal.style.display = 'flex';
+    }
+
+    function closeBooking(e) {
+        modal.style.display = 'none';
+    }
+
+    function confirmBooking() {
+        alert("Session Scheduled! Check your dashboard for the link.");
+        closeBooking();
+    }
+
+    // 3. Propose Swap Interaction
+    function proposeSwap() {
+        const btnText = document.querySelector('.btn-text');
+        btnText.innerText = "REQUEST SENT! ✨";
+        btnText.style.color = "#2ECC71";
+        
+        setTimeout(() => {
+            btnText.innerText = "PROPOSE SKILL SWAP";
+            btnText.style.color = "#7C4DFF";
+        }, 3000);
+    }
+
+    // 4. Chip Selection logic
+    function selectSwap(skill) {
+        alert(`You've selected to swap your ${skill} skills with Alex. Send a message to coordinate!`);
+    }
+
+    // 5. Phase Preview logic
+    function showPhase(num) {
+        console.log("Loading Phase " + num + " details...");
+        // This is where you'd navigate to the lesson player
+    }
+
+    function handleContact() {
+        alert("Opening Chat with Alex Rivera...");
+    }
+</script>
+
+</body>
+</html>

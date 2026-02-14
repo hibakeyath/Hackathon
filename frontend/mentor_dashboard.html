@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mentor Dashboard | SkillSwap</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ... (Keeping your existing CSS base) ... */
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body{ background:#f4f6fb; padding:20px; display:flex; justify-content:center; }
+.container{ width:380px; background:white; border-radius:30px; padding:24px; box-shadow:0 15px 40px rgba(0,0,0,0.08); position: relative; overflow: hidden;}
+
+.header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:25px; }
+.profile{ display:flex; align-items:center; gap:12px; }
+.profile img{ width:55px; height:55px; border-radius:50%; border:3px solid #6c2bd9; }
+.profile-text small{ color:#7a7f9a; font-weight:600; }
+.profile-text h2{ font-size:20px; font-weight:700; color:#111; }
+
+/* TOGGLE CARD - UPDATED FOR JS */
+.status-card{ background:#f1ebfb; padding:18px; border-radius:20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; transition: background 0.3s; }
+.status-card.off { background: #eee; }
+
+.toggle{ width:45px; height:24px; background:#6c2bd9; border-radius:50px; position:relative; cursor: pointer; transition: background 0.3s; }
+.toggle::after{ content:''; width:18px; height:18px; background:white; border-radius:50%; position:absolute; top:3px; right:3px; transition: transform 0.3s; }
+.toggle.off { background: #ccc; }
+.toggle.off::after { transform: translateX(-21px); }
+
+/* STATS */
+.stats{ display:flex; gap:15px; margin-bottom:30px; }
+.stat-card{ flex:1; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); }
+.stat-card h4{ color:#8a90a6; font-size:13px; margin-bottom:10px; }
+.stat-card h2{ font-size:28px; font-weight:700; color:#111; }
+.stat-card span{ color:#16a34a; font-size:14px; font-weight:600; }
+
+/* SKILLS */
+.section-title{ font-weight:700; font-size:18px; margin-bottom:15px; }
+.skill{ background:white; padding:16px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); transition: transform 0.2s; cursor: pointer;}
+.skill:active { transform: scale(0.98); }
+.skill-left{ display:flex; align-items:center; gap:15px; }
+.skill-icon{ width:45px; height:45px; border-radius:14px; background:#ede9fe; display:flex; align-items:center; justify-content:center; font-weight:700; color:#6c2bd9; }
+.skill-text h4{ font-size:15px; font-weight:600; }
+.skill-text p{ font-size:13px; color:#8a90a6; }
+
+/* NEXT SESSION */
+.session{ margin-top:30px; background:linear-gradient(135deg,#6c2bd9,#9333ea); padding:25px; border-radius:28px; color:white; transition: 0.3s; }
+.session.active-call { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.session h4{ font-size:13px; opacity:0.8; margin-bottom:5px; }
+.session h2{ font-size:22px; margin-bottom:15px; }
+.session button{ background:white; color:#6c2bd9; border:none; padding:10px 18px; border-radius:50px; font-weight:600; cursor:pointer; transition: 0.2s; }
+.session button:hover { transform: scale(1.05); }
+.session button:active { transform: scale(0.95); }
+
+/* TOAST NOTIFICATION */
+#toast {
+    position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+    background: #333; color: white; padding: 10px 20px; border-radius: 12px;
+    font-size: 14px; transition: bottom 0.4s; z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div id="toast">Status Updated!</div>
+
+  <div class="header">
+    <div class="profile">
+      <img src="https://i.pravatar.cc/100?u=alex" />
+      <div class="profile-text">
+        <small>MENTOR DASHBOARD</small>
+        <h2>Hello, Alex</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-card" id="statusCard">
+    <div id="statusText">Accepting New Students</div>
+    <div class="toggle" id="studentToggle"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h4>TOTAL SWAPS</h4>
+      <h2>34 <span>+12%</span></h2>
+    </div>
+    <div class="stat-card">
+      <h4>CREDITS</h4>
+      <h2 id="creditCount">0</h2>
+    </div>
+  </div>
+
+  <div class="section-title">Skills I Teach</div>
+
+  <div class="skill" onclick="showSkillDetail('UI Design')">
+    <div class="skill-left">
+      <div class="skill-icon">UI</div>
+      <div class="skill-text">
+        <h4>UI Design</h4>
+        <p>12 Active Students</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="skill" onclick="showSkillDetail('Python')">
+    <div class="skill-left">
+      <div class="skill-icon">Py</div>
+      <div class="skill-text">
+        <h4>Python Basics</h4>
+        <p>8 Active Students</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="session" id="sessionBox">
+    <h4>NEXT SESSION</h4>
+    <h2 id="sessionTitle">Design Critique</h2>
+    <button id="joinBtn">Join Call</button>
+  </div>
+</div>
+
+<script>
+// 1. Toggle Student Acceptance
+const toggle = document.getElementById('studentToggle');
+const statusCard = document.getElementById('statusCard');
+const statusText = document.getElementById('statusText');
+const toast = document.getElementById('toast');
+
+toggle.addEventListener('click', () => {
+    const isOff = toggle.classList.toggle('off');
+    statusCard.classList.toggle('off');
+    
+    if (isOff) {
+        statusText.innerText = "Currently Not Accepting";
+        showToast("Visibility set to Private");
+    } else {
+        statusText.innerText = "Accepting New Students";
+        showToast("Visibility set to Public");
+    }
+});
+
+// 2. Count-up Animation for Credits
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start);
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+
+const creditDisplay = document.getElementById('creditCount');
+// Animates 0 to 120 over 1.5 seconds
+setTimeout(() => animateValue(creditDisplay, 0, 120, 1500), 500);
+
+// 3. Join Call Interaction
+const joinBtn = document.getElementById('joinBtn');
+const sessionBox = document.getElementById('sessionBox');
+
+joinBtn.addEventListener('click', () => {
+    if (joinBtn.innerText === "Join Call") {
+        joinBtn.innerText = "Leave Call";
+        joinBtn.style.color = "#16a34a";
+        sessionBox.classList.add('active-call');
+        showToast("Connecting to server...");
+    } else {
+        joinBtn.innerText = "Join Call";
+        joinBtn.style.color = "#6c2bd9";
+        sessionBox.classList.remove('active-call');
+    }
+});
+
+// 4. Utility Functions
+function showToast(message) {
+    toast.innerText = message;
+    toast.style.bottom = "20px";
+    setTimeout(() => {
+        toast.style.bottom = "-60px";
+    }, 2000);
+}
+
+function showSkillDetail(skill) {
+    showToast(`Opening ${skill} roster...`);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap | Swap Skills, Not Money</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7C4DFF; /* Matched to your previous dashboard theme */
+            --gradient: linear-gradient(135deg, #7C4DFF, #2575fc);
+            --bg: #F8F9FD;
+            --text-dark: #2D3436;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            padding: 20px;
+            color: var(--text-dark);
+            max-width: 500px; /* Constrained for mobile-app feel */
+            margin: 0 auto;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--white);
+            padding: 15px 25px;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            margin-bottom: 25px;
+        }
+
+        .logo { font-weight: 700; font-size: 20px; color: var(--primary); }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .profile { width: 35px; height: 35px; border-radius: 50%; background: #ddd; border: 2px solid var(--white); outline: 2px solid var(--primary); }
+
+        /* HERO */
+        .hero {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 40px 25px;
+            border-radius: 35px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(124, 77, 255, 0.2);
+        }
+
+        .hero h1 { font-size: 32px; margin-bottom: 10px; line-height: 1.2; }
+        .hero p { opacity: 0.85; font-size: 14px; margin-bottom: 25px; }
+
+        .search-box {
+            background: var(--white);
+            border-radius: 50px;
+            padding: 8px 8px 8px 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            border: none; outline: none; width: 100%; font-size: 14px;
+        }
+
+        .search-btn {
+            background: var(--primary);
+            border: none; color: var(--white);
+            width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .search-btn:active { transform: scale(0.9); }
+
+        /* ACTION CARDS */
+        .cards { margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card {
+            padding: 25px 15px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+        .card.light { background: var(--white); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .card.dark { background: var(--gradient); color: var(--white); }
+
+        /* TRENDING */
+        .section { margin-top: 30px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag {
+            background: var(--white);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .tag:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* MENTORS */
+        .mentor-section {
+            margin-top: 30px;
+            background: #F0E7FF;
+            padding: 25px;
+            border-radius: 35px;
+        }
+
+        .mentor-card {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            transition: scale 0.2s;
+        }
+
+        .mentor-card:active { transform: scale(0.98); }
+
+        .mentor-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #eee; }
+        .rating { background: #F1F1FF; padding: 5px 12px; border-radius: 12px; font-size: 12px; color: var(--primary); font-weight: 700; }
+
+        /* FOOTER NAV */
+        .footer-nav {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            padding: 12px 30px;
+            border-radius: 40px;
+            display: flex;
+            gap: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .footer-nav span { font-size: 12px; font-weight: 600; color: #BDBDBD; cursor: pointer; }
+        .footer-nav .active { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">SkillSwap</div>
+        <div class="nav-icons">
+            <span style="cursor:pointer">🔔</span>
+            <div class="profile"></div>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>Swap Skills,<br>Not Money</h1>
+        <p>Join 10k+ active learners today.</p>
+        <div class="search-box">
+            <input type="text" id="skillSearch" placeholder="What do you want to learn?">
+            <button class="search-btn" onclick="handleSearch()">→</button>
+        </div>
+    </div>
+
+    <div class="cards">
+        <div class="card light">Find a<br>Mentor</div>
+        <div class="card dark">Become a<br>Mentor</div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h3>Trending Skills</h3>
+            <span style="color:var(--primary); font-size:13px; font-weight:700; cursor:pointer;">See All</span>
+        </div>
+        <div class="tags">
+            <div class="tag">UI Design</div>
+            <div class="tag">Python</div>
+            <div class="tag">Cooking</div>
+            <div class="tag">Spanish</div>
+            <div class="tag">Piano</div>
+        </div>
+    </div>
+
+    <div class="mentor-section">
+        <h3 style="font-size: 16px;">Top Rated Mentors</h3>
+        <div id="mentorList">
+            </div>
+    </div>
+
+    <div class="footer-nav">
+        <span class="active">Home</span>
+        <span>Explore</span>
+        <span>Chats</span>
+        <span>Profile</span>
+    </div>
+
+    <script>
+        const mentors = [
+            { name: "Alex Chen", skill: "UI/UX Specialist", rate: "4.9" },
+            { name: "Sarah Jenkins", skill: "Web Developer", rate: "5.0" }
+        ];
+
+        function renderMentors() {
+            const list = document.getElementById('mentorList');
+            list.innerHTML = mentors.map(m => `
+                <div class="mentor-card">
+                    <div class="mentor-info">
+                        <div class="avatar"></div>
+                        <div>
+                            <strong style="font-size:14px;">${m.name}</strong><br>
+                            <small style="color:#8E8E93;">${m.skill}</small>
+                        </div>
+                    </div>
+                    <div class="rating">⭐ ${m.rate}</div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch() {
+            const val = document.getElementById('skillSearch').value;
+            if(!val) return alert("Enter a skill!");
+            alert("Finding mentors for: " + val);
+        }
+
+        // Initialize
+        renderMentors();
+    </script>
+</body>
+</html>
